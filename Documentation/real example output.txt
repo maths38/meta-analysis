@@ -1,0 +1,384 @@
+Meta-analysis of studies with complex knowledge and unexplained heterogeneity.
+Copyright (C) 2025 Martin Adamcik, e-mail: maths38@gmail.com
+The source code requires Python 3.12 or above, with Numpy and Scipy packages, and is OS independent.
+This program comes with ABSOLUTELY NO WARRANTY; for details see the license.
+This is free software, and you are welcome to redistribute it under certain conditions; see the GNU General Public License.
+
+CHECK INPUT:
+
+Study data were read from input.txt
+The 5 variables observed in 12 studies are ['CA', 'REC', 'ESC', 'RES', 'ESS']
+The pooled sample size is 2564. Sample sizes determine study weights.
+
+Study 0 with weight 0.1334 constraints:
+
+P( REC & NOT RES ) = 8e-05
+P( ESC & NOT ESS ) = 8e-05
+P( REC & NOT CA ) = 8e-05
+P( ESC & NOT CA ) = 8e-05
+P( CA & ESC & ESS & NOT REC | CA & NOT REC ) = 0.3333333333333333
+P( CA & ESC & ESS & NOT REC | ESS & NOT REC ) = 0.06593406593406594
+P( CA & REC & RES | CA ) = 0.4
+P( CA & REC & RES | RES ) = 0.21052631578947367
+P( CA ) = 0.08771929824561403
+
+Study 1 with weight 0.1123 constraints:
+
+P( REC & NOT RES ) = 8e-05
+P( ESC & NOT ESS ) = 8e-05
+P( REC & NOT CA ) = 8e-05
+P( ESC & NOT CA ) = 8e-05
+P( CA & REC & RES | CA ) = 0.3333333333333333
+P( CA & REC & RES | RES ) = 0.11290322580645161
+P( CA ) = 0.07291666666666667
+
+Study 2 with weight 0.0386 constraints:
+
+P( REC & NOT RES ) = 8e-05
+P( ESC & NOT ESS ) = 8e-05
+P( REC & NOT CA ) = 8e-05
+P( ESC & NOT CA ) = 8e-05
+P( CA & NOT REC | NOT REC ) = 0.1414141414141414
+P( CA & ESC & NOT REC | NOT REC ) = 0.13131313131313133
+
+Study 3 with weight 0.0398 constraints:
+
+P( REC & NOT RES ) = 8e-05
+P( ESC & NOT ESS ) = 8e-05
+P( REC & NOT CA ) = 8e-05
+P( ESC & NOT CA ) = 8e-05
+P( CA & NOT REC | NOT REC ) = 0.09803921568627451
+
+Study 4 with weight 0.1346 constraints:
+
+P( REC & NOT RES ) = 8e-05
+P( ESC & NOT ESS ) = 8e-05
+P( REC & NOT CA ) = 8e-05
+P( ESC & NOT CA ) = 8e-05
+P( RES ) = 0.26666666666666666
+P( CA & REC & RES | RES ) = 0.2717391304347826
+P( CA ) = 0.1246376811594203
+P( CA & ESC & NOT REC | NOT REC ) = 0.028125
+
+Study 5 with weight 0.165 constraints:
+
+P( REC & NOT RES ) = 8e-05
+P( ESC & NOT ESS ) = 8e-05
+P( REC & NOT CA ) = 8e-05
+P( ESC & NOT CA ) = 8e-05
+P( REC OR ESC ) = 0.035897435897435895
+P( CA ) = 0.04491725768321513
+
+Study 6 with weight 0.1681 constraints:
+
+P( REC & NOT RES ) = 8e-05
+P( ESC & NOT ESS ) = 8e-05
+P( REC & NOT CA ) = 8e-05
+P( ESC & NOT CA ) = 8e-05
+P( CA & REC & RES | CA ) = 0.7142857142857143
+P( CA ) = 0.03248259860788863
+
+Study 7 with weight 0.0768 constraints:
+
+P( REC & NOT RES ) = 8e-05
+P( ESC & NOT ESS ) = 8e-05
+P( REC & NOT CA ) = 8e-05
+P( ESC & NOT CA ) = 8e-05
+P( CA & NOT REC & NOT ESC | NOT REC & NOT ESC ) = 0.005376344086021506
+P( REC OR ESC ) = 0.05583756345177665
+
+Study 8 with weight 0.0768 constraints:
+
+P( REC & NOT RES ) = 8e-05
+P( ESC & NOT ESS ) = 8e-05
+P( REC & NOT CA ) = 8e-05
+P( ESC & NOT CA ) = 8e-05
+P( CA & NOT REC | NOT REC ) = 0.046632124352331605
+P( REC ) = 0.02030456852791878
+
+Study 9 with weight 0.0195 constraints:
+
+P( REC & NOT RES ) = 8e-05
+P( ESC & NOT ESS ) = 8e-05
+P( REC & NOT CA ) = 8e-05
+P( ESC & NOT CA ) = 8e-05
+P( REC OR ESC ) = 0.02
+P( CA ) = 0.08
+
+Study 10 with weight 0.0156 constraints:
+
+P( REC & NOT RES ) = 8e-05
+P( ESC & NOT ESS ) = 8e-05
+P( REC & NOT CA ) = 8e-05
+P( ESC & NOT CA ) = 8e-05
+P( RES ) = 0.4
+P( RES & ESS | RES ) = 0.8125
+P( CA & REC ) = 8e-05
+P( ESS ) = 0.625
+P( ESC ) = 0.025
+P( CA ) = 0.025
+
+Study 11 with weight 0.0195 constraints:
+
+P( REC & NOT RES ) = 8e-05
+P( ESC & NOT ESS ) = 8e-05
+P( REC & NOT CA ) = 8e-05
+P( ESC & NOT CA ) = 8e-05
+P( ESS ) = 0.44
+P( CA & ESC & ESS | ESS ) = 0.5454545454545454
+
+OUTPUT:
+
+The resulting distribution after 94 iterations is [0.5780, 0.1695, 0.0526, 0.1217, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0174, 0.0002, 0.0000, 0.0000, 0.0000, 0.0173, 0.0000, 0.0090, 0.0000, 0.0000, 0.0001, 0.0000, 0.0000, 0.0000, 0.0000, 0.0340]
+The sum of weighted KL-divergences of this distribution to sets of probability functions given by individual studies is: 0.0251824488782151
+This sum is what is being minimised. The last improvement to this sum was by 9.231766345332848e-07 < 1e-06 = stopping
+
+Assuming that all available evidence was provided, that studies are either homogeneous or it is unknown why they are heterogeneous, and the population size is much larger than the pooled sample size, then the following is among the best estimations of probabilities we can make.
+
+P( CA ) = 0.0781
+P( NOT CA ) = 0.9219
+P( REC ) = 0.0341
+P( NOT REC ) = 0.9659
+P( ESC ) = 0.0604
+P( NOT ESC ) = 0.9396
+P( RES ) = 0.2175
+P( NOT RES ) = 0.7825
+P( ESS ) = 0.3517
+P( NOT ESS ) = 0.6483
+P( CA & REC ) = 0.0341
+P( CA & NOT REC ) = 0.0440
+P( NOT CA & REC ) = 0.0001
+P( NOT CA & NOT REC ) = 0.9219
+P( CA & ESC ) = 0.0603
+P( CA & NOT ESC ) = 0.0177
+P( NOT CA & ESC ) = 0.0001
+P( NOT CA & NOT ESC ) = 0.9219
+P( CA & RES ) = 0.0431
+P( CA & NOT RES ) = 0.0349
+P( NOT CA & RES ) = 0.1743
+P( NOT CA & NOT RES ) = 0.7476
+P( CA & ESS ) = 0.0605
+P( CA & NOT ESS ) = 0.0175
+P( NOT CA & ESS ) = 0.2912
+P( NOT CA & NOT ESS ) = 0.6307
+P( REC & ESC ) = 0.0340
+P( REC & NOT ESC ) = 0.0001
+P( NOT REC & ESC ) = 0.0264
+P( NOT REC & NOT ESC ) = 0.9395
+P( REC & RES ) = 0.0341
+P( REC & NOT RES ) = 0.0001
+P( NOT REC & RES ) = 0.1834
+P( NOT REC & NOT RES ) = 0.7824
+P( REC & ESS ) = 0.0340
+P( REC & NOT ESS ) = 0.0001
+P( NOT REC & ESS ) = 0.3177
+P( NOT REC & NOT ESS ) = 0.6482
+P( ESC & RES ) = 0.0430
+P( ESC & NOT RES ) = 0.0174
+P( NOT ESC & RES ) = 0.1745
+P( NOT ESC & NOT RES ) = 0.7651
+P( ESC & ESS ) = 0.0603
+P( ESC & NOT ESS ) = 0.0001
+P( NOT ESC & ESS ) = 0.2914
+P( NOT ESC & NOT ESS ) = 0.6482
+P( RES & ESS ) = 0.1648
+P( RES & NOT ESS ) = 0.0527
+P( NOT RES & ESS ) = 0.1870
+P( NOT RES & NOT ESS ) = 0.5956
+P( CA & REC & ESC ) = 0.0340
+P( CA & REC & NOT ESC ) = 0.0001
+P( CA & NOT REC & ESC ) = 0.0263
+P( CA & NOT REC & NOT ESC ) = 0.0176
+P( NOT CA & REC & ESC ) = 0.0000
+P( NOT CA & REC & NOT ESC ) = 0.0000
+P( NOT CA & NOT REC & ESC ) = 0.0000
+P( NOT CA & NOT REC & NOT ESC ) = 0.9218
+P( CA & REC & RES ) = 0.0341
+P( CA & REC & NOT RES ) = 0.0000
+P( CA & NOT REC & RES ) = 0.0091
+P( CA & NOT REC & NOT RES ) = 0.0349
+P( NOT CA & REC & RES ) = 0.0000
+P( NOT CA & REC & NOT RES ) = 0.0001
+P( NOT CA & NOT REC & RES ) = 0.1743
+P( NOT CA & NOT REC & NOT RES ) = 0.7475
+P( CA & REC & ESS ) = 0.0340
+P( CA & REC & NOT ESS ) = 0.0001
+P( CA & NOT REC & ESS ) = 0.0265
+P( CA & NOT REC & NOT ESS ) = 0.0175
+P( NOT CA & REC & ESS ) = 0.0000
+P( NOT CA & REC & NOT ESS ) = 0.0001
+P( NOT CA & NOT REC & ESS ) = 0.2912
+P( NOT CA & NOT REC & NOT ESS ) = 0.6307
+P( CA & ESC & RES ) = 0.0430
+P( CA & ESC & NOT RES ) = 0.0173
+P( CA & NOT ESC & RES ) = 0.0001
+P( CA & NOT ESC & NOT RES ) = 0.0176
+P( NOT CA & ESC & RES ) = 0.0000
+P( NOT CA & ESC & NOT RES ) = 0.0001
+P( NOT CA & NOT ESC & RES ) = 0.1743
+P( NOT CA & NOT ESC & NOT RES ) = 0.7475
+P( CA & ESC & ESS ) = 0.0603
+P( CA & ESC & NOT ESS ) = 0.0000
+P( CA & NOT ESC & ESS ) = 0.0002
+P( CA & NOT ESC & NOT ESS ) = 0.0175
+P( NOT CA & ESC & ESS ) = 0.0000
+P( NOT CA & ESC & NOT ESS ) = 0.0001
+P( NOT CA & NOT ESC & ESS ) = 0.2912
+P( NOT CA & NOT ESC & NOT ESS ) = 0.6307
+P( CA & RES & ESS ) = 0.0430
+P( CA & RES & NOT ESS ) = 0.0001
+P( CA & NOT RES & ESS ) = 0.0175
+P( CA & NOT RES & NOT ESS ) = 0.0174
+P( NOT CA & RES & ESS ) = 0.1217
+P( NOT CA & RES & NOT ESS ) = 0.0526
+P( NOT CA & NOT RES & ESS ) = 0.1695
+P( NOT CA & NOT RES & NOT ESS ) = 0.5781
+P( REC & ESC & RES ) = 0.0340
+P( REC & ESC & NOT RES ) = 0.0000
+P( REC & NOT ESC & RES ) = 0.0001
+P( REC & NOT ESC & NOT RES ) = 0.0000
+P( NOT REC & ESC & RES ) = 0.0090
+P( NOT REC & ESC & NOT RES ) = 0.0173
+P( NOT REC & NOT ESC & RES ) = 0.1744
+P( NOT REC & NOT ESC & NOT RES ) = 0.7651
+P( REC & ESC & ESS ) = 0.0340
+P( REC & ESC & NOT ESS ) = 0.0000
+P( REC & NOT ESC & ESS ) = 0.0001
+P( REC & NOT ESC & NOT ESS ) = 0.0001
+P( NOT REC & ESC & ESS ) = 0.0263
+P( NOT REC & ESC & NOT ESS ) = 0.0000
+P( NOT REC & NOT ESC & ESS ) = 0.2913
+P( NOT REC & NOT ESC & NOT ESS ) = 0.6481
+P( REC & RES & ESS ) = 0.0340
+P( REC & RES & NOT ESS ) = 0.0001
+P( REC & NOT RES & ESS ) = 0.0000
+P( REC & NOT RES & NOT ESS ) = 0.0001
+P( NOT REC & RES & ESS ) = 0.1308
+P( NOT REC & RES & NOT ESS ) = 0.0526
+P( NOT REC & NOT RES & ESS ) = 0.1869
+P( NOT REC & NOT RES & NOT ESS ) = 0.5955
+P( ESC & RES & ESS ) = 0.0430
+P( ESC & RES & NOT ESS ) = 0.0000
+P( ESC & NOT RES & ESS ) = 0.0173
+P( ESC & NOT RES & NOT ESS ) = 0.0001
+P( NOT ESC & RES & ESS ) = 0.1218
+P( NOT ESC & RES & NOT ESS ) = 0.0527
+P( NOT ESC & NOT RES & ESS ) = 0.1696
+P( NOT ESC & NOT RES & NOT ESS ) = 0.5955
+P( CA & REC & ESC & RES ) = 0.0340
+P( CA & REC & ESC & NOT RES ) = 0.0000
+P( CA & REC & NOT ESC & RES ) = 0.0001
+P( CA & REC & NOT ESC & NOT RES ) = 0.0000
+P( CA & NOT REC & ESC & RES ) = 0.0090
+P( CA & NOT REC & ESC & NOT RES ) = 0.0173
+P( CA & NOT REC & NOT ESC & RES ) = 0.0000
+P( CA & NOT REC & NOT ESC & NOT RES ) = 0.0176
+P( NOT CA & REC & ESC & RES ) = 0.0000
+P( NOT CA & REC & ESC & NOT RES ) = 0.0000
+P( NOT CA & REC & NOT ESC & RES ) = 0.0000
+P( NOT CA & REC & NOT ESC & NOT RES ) = 0.0000
+P( NOT CA & NOT REC & ESC & RES ) = 0.0000
+P( NOT CA & NOT REC & ESC & NOT RES ) = 0.0000
+P( NOT CA & NOT REC & NOT ESC & RES ) = 0.1743
+P( NOT CA & NOT REC & NOT ESC & NOT RES ) = 0.7475
+P( CA & REC & ESC & ESS ) = 0.0340
+P( CA & REC & ESC & NOT ESS ) = 0.0000
+P( CA & REC & NOT ESC & ESS ) = 0.0000
+P( CA & REC & NOT ESC & NOT ESS ) = 0.0001
+P( CA & NOT REC & ESC & ESS ) = 0.0263
+P( CA & NOT REC & ESC & NOT ESS ) = 0.0000
+P( CA & NOT REC & NOT ESC & ESS ) = 0.0002
+P( CA & NOT REC & NOT ESC & NOT ESS ) = 0.0175
+P( NOT CA & REC & ESC & ESS ) = 0.0000
+P( NOT CA & REC & ESC & NOT ESS ) = 0.0000
+P( NOT CA & REC & NOT ESC & ESS ) = 0.0000
+P( NOT CA & REC & NOT ESC & NOT ESS ) = 0.0000
+P( NOT CA & NOT REC & ESC & ESS ) = 0.0000
+P( NOT CA & NOT REC & ESC & NOT ESS ) = 0.0000
+P( NOT CA & NOT REC & NOT ESC & ESS ) = 0.2912
+P( NOT CA & NOT REC & NOT ESC & NOT ESS ) = 0.6306
+P( CA & REC & RES & ESS ) = 0.0340
+P( CA & REC & RES & NOT ESS ) = 0.0001
+P( CA & REC & NOT RES & ESS ) = 0.0000
+P( CA & REC & NOT RES & NOT ESS ) = 0.0000
+P( CA & NOT REC & RES & ESS ) = 0.0090
+P( CA & NOT REC & RES & NOT ESS ) = 0.0000
+P( CA & NOT REC & NOT RES & ESS ) = 0.0175
+P( CA & NOT REC & NOT RES & NOT ESS ) = 0.0174
+P( NOT CA & REC & RES & ESS ) = 0.0000
+P( NOT CA & REC & RES & NOT ESS ) = 0.0000
+P( NOT CA & REC & NOT RES & ESS ) = 0.0000
+P( NOT CA & REC & NOT RES & NOT ESS ) = 0.0001
+P( NOT CA & NOT REC & RES & ESS ) = 0.1217
+P( NOT CA & NOT REC & RES & NOT ESS ) = 0.0526
+P( NOT CA & NOT REC & NOT RES & ESS ) = 0.1695
+P( NOT CA & NOT REC & NOT RES & NOT ESS ) = 0.5781
+P( CA & ESC & RES & ESS ) = 0.0430
+P( CA & ESC & RES & NOT ESS ) = 0.0000
+P( CA & ESC & NOT RES & ESS ) = 0.0173
+P( CA & ESC & NOT RES & NOT ESS ) = 0.0000
+P( CA & NOT ESC & RES & ESS ) = 0.0000
+P( CA & NOT ESC & RES & NOT ESS ) = 0.0001
+P( CA & NOT ESC & NOT RES & ESS ) = 0.0002
+P( CA & NOT ESC & NOT RES & NOT ESS ) = 0.0174
+P( NOT CA & ESC & RES & ESS ) = 0.0000
+P( NOT CA & ESC & RES & NOT ESS ) = 0.0000
+P( NOT CA & ESC & NOT RES & ESS ) = 0.0000
+P( NOT CA & ESC & NOT RES & NOT ESS ) = 0.0001
+P( NOT CA & NOT ESC & RES & ESS ) = 0.1217
+P( NOT CA & NOT ESC & RES & NOT ESS ) = 0.0526
+P( NOT CA & NOT ESC & NOT RES & ESS ) = 0.1695
+P( NOT CA & NOT ESC & NOT RES & NOT ESS ) = 0.5781
+P( REC & ESC & RES & ESS ) = 0.0340
+P( REC & ESC & RES & NOT ESS ) = 0.0000
+P( REC & ESC & NOT RES & ESS ) = 0.0000
+P( REC & ESC & NOT RES & NOT ESS ) = 0.0000
+P( REC & NOT ESC & RES & ESS ) = 0.0000
+P( REC & NOT ESC & RES & NOT ESS ) = 0.0001
+P( REC & NOT ESC & NOT RES & ESS ) = 0.0000
+P( REC & NOT ESC & NOT RES & NOT ESS ) = 0.0000
+P( NOT REC & ESC & RES & ESS ) = 0.0090
+P( NOT REC & ESC & RES & NOT ESS ) = 0.0000
+P( NOT REC & ESC & NOT RES & ESS ) = 0.0173
+P( NOT REC & ESC & NOT RES & NOT ESS ) = 0.0000
+P( NOT REC & NOT ESC & RES & ESS ) = 0.1217
+P( NOT REC & NOT ESC & RES & NOT ESS ) = 0.0526
+P( NOT REC & NOT ESC & NOT RES & ESS ) = 0.1696
+P( NOT REC & NOT ESC & NOT RES & NOT ESS ) = 0.5955
+P( CA & REC & ESC & RES & ESS ) = 0.0340
+P( CA & REC & ESC & RES & NOT ESS ) = 0.0000
+P( CA & REC & ESC & NOT RES & ESS ) = 0.0000
+P( CA & REC & ESC & NOT RES & NOT ESS ) = 0.0000
+P( CA & REC & NOT ESC & RES & ESS ) = 0.0000
+P( CA & REC & NOT ESC & RES & NOT ESS ) = 0.0001
+P( CA & REC & NOT ESC & NOT RES & ESS ) = 0.0000
+P( CA & REC & NOT ESC & NOT RES & NOT ESS ) = 0.0000
+P( CA & NOT REC & ESC & RES & ESS ) = 0.0090
+P( CA & NOT REC & ESC & RES & NOT ESS ) = 0.0000
+P( CA & NOT REC & ESC & NOT RES & ESS ) = 0.0173
+P( CA & NOT REC & ESC & NOT RES & NOT ESS ) = 0.0000
+P( CA & NOT REC & NOT ESC & RES & ESS ) = 0.0000
+P( CA & NOT REC & NOT ESC & RES & NOT ESS ) = 0.0000
+P( CA & NOT REC & NOT ESC & NOT RES & ESS ) = 0.0002
+P( CA & NOT REC & NOT ESC & NOT RES & NOT ESS ) = 0.0174
+P( NOT CA & REC & ESC & RES & ESS ) = 0.0000
+P( NOT CA & REC & ESC & RES & NOT ESS ) = 0.0000
+P( NOT CA & REC & ESC & NOT RES & ESS ) = 0.0000
+P( NOT CA & REC & ESC & NOT RES & NOT ESS ) = 0.0000
+P( NOT CA & REC & NOT ESC & RES & ESS ) = 0.0000
+P( NOT CA & REC & NOT ESC & RES & NOT ESS ) = 0.0000
+P( NOT CA & REC & NOT ESC & NOT RES & ESS ) = 0.0000
+P( NOT CA & REC & NOT ESC & NOT RES & NOT ESS ) = 0.0000
+P( NOT CA & NOT REC & ESC & RES & ESS ) = 0.0000
+P( NOT CA & NOT REC & ESC & RES & NOT ESS ) = 0.0000
+P( NOT CA & NOT REC & ESC & NOT RES & ESS ) = 0.0000
+P( NOT CA & NOT REC & ESC & NOT RES & NOT ESS ) = 0.0000
+P( NOT CA & NOT REC & NOT ESC & RES & ESS ) = 0.1217
+P( NOT CA & NOT REC & NOT ESC & RES & NOT ESS ) = 0.0526
+P( NOT CA & NOT REC & NOT ESC & NOT RES & ESS ) = 0.1695
+P( NOT CA & NOT REC & NOT ESC & NOT RES & NOT ESS ) = 0.5780
+
+To find the probability of a disjunction use the above with P( X OR Y ) = P( X ) + P( Y ) - P( X & Y ).
+
+To find the probability of a conditional use the above with P( X | Y ) = P( X & Y ) / P( Y ).
+
