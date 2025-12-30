@@ -11,7 +11,6 @@ StudyA       # STUDY (not case-sensitive) is a keyword that denotes that new stu
 
 size = 70    # For each study you must define one sample size. SAMPLE, SIZE and SAMPLE SIZE all can be used as a keyword. 
 
-maxiter = 2000  # We can increase maxiter parameter (default 1000) anywhere after STUDY appeared if we receive a warning to that end.
 gtol = 1e-13  # We can decrease gtol parameter down to 1e-13 (default 1e-12) if we want to increase the maximal achievable level of precision. 
 stopping = 1e-7  # We can override stopping parameter (default 1e-6) anywhere after STUDY appeared to increase or decrease precision.
 
@@ -45,3 +44,4 @@ P(CANCER | TEST) = 20/50   # This is a conditional type of constraint recognised
 
 
 # Check if your input was interpreted correctly in the output file.
+
