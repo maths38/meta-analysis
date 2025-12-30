@@ -42,6 +42,15 @@ Assuming the population from which we select the samples is much larger than the
 
 The shared Python program iteratively produces a sequence of probability distributions that converges to one of the optimal probability distributions defined above. In practice, when many studies with jointly inconsistent constraints are combined, there is likely only one such optimal distribution. However, if all constraints across all studies are jointly consistent, there are many optimal solutions. It is difficult to tell to which exact distribution the process would approach in this situation. However, if we can combine all these consistent constraints into a single study, then the program results in the most entropic distribution that satisfies these constraints, because the iterative procedure starts at the uniform probability distribution. The resulting most entropic distribution is in general considered an optimal representation when we look at one consistent set of constraints that determine a closed convex set of probability distributions. Nevertheless, this is out of the scope of the original justification that focuses on combining jointly inconsistent studies.
 
+If the unknown nature of the distribution to which the procedure approaches in the case of more optimal solutions and multiple studies is unsatisfactory, we can add a small bias: a study claiming the single uniform distribution but with a weight say 1/1,000. If there are more optimal solutions, and regardless of the number of studies, then the procedure would approach the central mass at an infinite language point among these more optimal solutions as the weight approaches (but is not equal to) 0. The proof and explanation can be found in the thesis Collective Reasoning under Uncertainty and Inconsistency (published by the University of Manchester, https://eprints.maths.manchester.ac.uk/id/eprint/2110). In the thesis, we can also find the proofs that this biased procedure, called there LEP or Linear Entropy Process, has the following desirable properties:
+
+1. Language Invariance Principle: This means that we can add variables that we have no constraints for without changing the probabilities restricted to the original language.  
+2. Equivalence Principle: The order of studies in which they are arranged does not matter.  
+3. Atomic Renaming Principle: If we rename the variables then the resulting probabilities will be renamed accordingly.  
+4. Consistency Principle: If all constraints across all studies are jointly consistent, then the procedure approaches a distribution that satisfies all the constraints.  
+5. Collegiality Principle: If we add one more study whose constraints are consistent with the previously approached distribution, then this does not change the resulting distribution. In particular, if we add a study with no constraints this will not change the resulting distribution.  
+6. Agreement Principle: If two sets of studies result in the same distribution, then adding the studies together would again result in the same distribution.  
+
 
 ## V. UNDERSTANDING OUTPUT
 
@@ -70,7 +79,7 @@ Then we can compute that P( CANCER | TEST ) = P( CANCER & TEST | TEST ) = 0.1588
 
 First list there your propositional variables, and only variables. Variables can use letters and underscores [A-Za-z_].   
 STUDY must not be used as a variable even as a part of their name such as STUDYING.  
-The following keywords must not be used as variables: SAMPLE, SIZE, MAXITER, STOPPING, GTOL, OR, NOT, NEG, but they could be part of their names such as NOTE.  
+The following keywords must not be used as variables: SAMPLE, SIZE, MAXITER, STOPPING, GTOL, OR, NOT, NEG, BIAS, but they could be part of their names such as NOTE.  
 
 For the toy example above, we can list variables as follows:
 
@@ -143,11 +152,15 @@ P( CANCER TEST | TEST ) = 20/5
 
 If we had more variables, we could have used logical conjunction also in the condition such as P( Var_A | Var_B & Var_C ). However, conditionals using logical disjunctions (OR) anywhere are not supported.
 
-
 See the toy and real example input text files for further guidelines.
 
 
-## VIII. RUNNING THE PROGRAM
+## VIII. HISTORY
+ 
+This program's origin can be traced back to the Social Entropy Process that George Wilmers proposed for merging individually consistent beliefs of experts that could be jointly inconsistent. The idea was that this would directly extend the Maximum Entropy process that had been already considered the best justified when dealing with individually consistent beliefs of a single expert. The author of the program, as a Ph.D. candidate under George Wilmers's supervision, then tried to use the justification based on counting the number of possible states, which was also used to justify the Maximum Entropy process and was due to Jeff Paris and Alena Vencovska, to justify the Social Entropy Process, but instead found a justification of the first stage of the dual process to the Social Entropy Process, named the Linear Entropy Process. The assumptions used in the proof limit the justification to the case when beliefs of experts are based on observing samples from a population, which size is much larger than the pooled sample size, and the reason as to why the observations are more different than statistically expected is unknown. The author of the program then used it to combine real medical studies investigating the incidence of cancer with unprovoked venous thromboembolism after suffering from this condition and used the resulting combination as a basis of a real medical advice. This program is being now being publicly shared in hope that others will find it also useful.
+
+
+## IX. RUNNING THE PROGRAM
 
 1. Edit input.txt
 2. Run meta_analysis_for_windows11_64bit.exe in Windows 11 (64-bit) or above, or meta_analysis_source_code.py in your Python (3.12 or above) interpreter, with Numpy and Scipy packages
