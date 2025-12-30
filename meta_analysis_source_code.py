@@ -130,15 +130,21 @@ for line in lines:
                 bias = float(match.group(1))
             except ValueError:
                 bias = 0
+            if bias > 1:
+                bias = 1
         match = re.search(bias_fraction_pattern, line, flags=re.IGNORECASE)
         if match:
             try:
                 bias = float(match.group(1).replace(',', '')) / float(match.group(2).replace(',', ''))
             except ValueError:
                 bias = 0
+            if bias > 1:
+                bias = 1
         match = re.search(bias_scientific_pattern, line, flags=re.IGNORECASE)
         if match:
             bias = 1 / (10 ** (int(match.group(1))))
+            if bias > 1:
+                bias = 1
         match = re.search(gtol_scientific_pattern, line, flags=re.IGNORECASE)
         if match:
             gtol_const = 1 / (10 ** (int(match.group(1))))
