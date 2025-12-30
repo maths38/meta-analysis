@@ -15,7 +15,7 @@ I would like to share with you a tool to combine different studies - to perform 
 The method works with probability distributions defined over a finite set of mutually exclusive and exhaustive set of possibilities. This set is defined by the variables that the studies to be combined use to describe observations about their subjects. For example, a study might observe whether patients have cancer, which is the first variable, and suspicious test results, which is the second variable. Lets denote these two variables CANCER and TEST. Then there are four mutually exclusive and exhaustive possibilities for each and every patient: CANCER & TEST, NOT CANCER & TEST, CANCER & NOT TEST, NOT CANCER & NOT TEST. In other words, each patient either has cancer or not, and has suspicious test or not. Ideally, the study also observes exactly how many of their test subjects belong to each of these mutually exclusive categories obtaining a single probability distribution. Nevertheless, especially if several similar studies are combined that do not use the same set of variables, each observation study only gives constraints on the unknown distribution, defined over all variables we work with. 
 
 - For a toy example, say that the first study only reports that  
-(a) out of 70 patients had cancer,  
+(a) 7 out of 70 patients had cancer,  
 - while the second study reports both that  
 (a) 50 out of 100 patients had suspicious result, and  
 (b) 20 out of 50 patients who had suspicious test results in fact also had cancer.  
