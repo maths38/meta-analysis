@@ -26,8 +26,10 @@ cycles = 0  # Minimal number of iterations of the procedure for testing, 0 is de
 stopping = 1e-6  # When the distance decrease falls below this we stop the procedure.
 maxiter_const = 1000  # Used in projection as maximum number of iterations.
 # The program will give a warning if maxiter needs to be increased.
+# Maxiter should not be below 500.
 gtol_const = 1e-12  # Used in projection as tolerance for constraint satisfaction.
 # This number determines the maximal level of precision, lower it to 1e-13 if higher precision is needed.
+# This number should not be increased above 1e-11. Use 1e-11 for faster computation and higher stability.
 input_file = "input.txt"  # From where study data are read.
 output_file = "output.txt"  # Where the resulting distribution will be stored.
 log_file = "log.txt"  # Where the iteration process will be logged.
@@ -42,7 +44,7 @@ with open(output_file, "w") as file:  # first we set up an output file
     file.write('Meta-analysis of studies with complex knowledge and unexplained heterogeneity.\nCopyright (C) 2025 Martin Adamcik, e-mail: maths38@gmail.com\nThe source code requires Python 3.12 or above, with Numpy and Scipy packages, and is OS independent.\nThis program comes with ABSOLUTELY NO WARRANTY; for details see the license.\nThis is free software, and you are welcome to redistribute it under certain conditions; see the GNU General Public License.\n\n')
     file.write('CHECK INPUT:\n')
 with open(log_file, "w") as file:  # second we set up a log file
-    file.write('This log file shows how the procedure converged to the output shown in ' + output_file)
+    file.write('This log file shows how the procedure converged to the output shown in ' + output_file + ' for advanced diagnosis.')
     file.write('\nPlease make sure to resolve any warnings given to you in ' + output_file + '\n')
 try:
     with open(input_file, "r") as file:  # third we try to read the input file
@@ -69,6 +71,9 @@ stopping_pattern = r'\bstopping\b.*?([\d.]+)'  # to change stopping parameter
 stopping_fraction_pattern = r'\bstopping\b.*?([\d,.]+)\s*/\s*([\d,.]+)'
 stopping_scientific_pattern = r'\bstopping\b.*?1e-([\d]+)'
 gtol_scientific_pattern = r'\bgtol\b.*?1e-([\d]+)'  # to change gtol parameter
+bias_pattern = r'\bbias\b.*?([\d.]+)'  # to change bias parameter
+bias_fraction_pattern = r'\bbias\b.*?([\d,.]+)\s*/\s*([\d,.]+)'
+bias_scientific_pattern = r'\bbias\b.*?1e-([\d]+)'
 for line in lines:
     match = re.search(comment_pattern, line)
     if match:
@@ -95,33 +100,58 @@ for line in lines:
             try:
                 maxiter_const = int(match.group(1).replace(',',''))
             except ValueError:
-                maxiter_const = 1000
+                maxiter_const = 1000  # default value
+            if maxiter_const < 500:
+                maxiter_const = 500  # it must be at least 500
         match = re.search(stopping_pattern, line, flags=re.IGNORECASE)
         if match:
             try:
                 stopping = float(match.group(1))
             except ValueError:
                 stopping = 1e-6
+            if stopping > 1e-4:
+                stopping = 1e-4  # it must be at least 1e-4
         match = re.search(stopping_fraction_pattern, line, flags=re.IGNORECASE)
         if match:
             try:
                 stopping = float(match.group(1).replace(',',''))/float(match.group(2).replace(',',''))
             except ValueError:
                 stopping = 1e-6
+            if stopping > 1e-4:
+                stopping = 1e-4  # it must be at least 1e-4
         match = re.search(stopping_scientific_pattern, line, flags=re.IGNORECASE)
         if match:
             stopping = 1/(10**(int(match.group(1))))
+            if stopping > 1e-4:
+                stopping = 1e-4  # it must be at least 1e-4
+        match = re.search(bias_pattern, line, flags=re.IGNORECASE)
+        if match:
+            try:
+                bias = float(match.group(1))
+            except ValueError:
+                bias = 0
+        match = re.search(bias_fraction_pattern, line, flags=re.IGNORECASE)
+        if match:
+            try:
+                bias = float(match.group(1).replace(',', '')) / float(match.group(2).replace(',', ''))
+            except ValueError:
+                bias = 0
+        match = re.search(bias_scientific_pattern, line, flags=re.IGNORECASE)
+        if match:
+            bias = 1 / (10 ** (int(match.group(1))))
         match = re.search(gtol_scientific_pattern, line, flags=re.IGNORECASE)
         if match:
             gtol_const = 1 / (10 ** (int(match.group(1))))
             if gtol_const < 1e-13:
                 gtol_const = 1e-13
-print('The maxiter parameter when computing projections is', maxiter_const, 'Increase it if you receive a warning to that end.')
+            if gtol_const > 1e-11:
+                gtol_const = 1e-11
+print('The maxiter parameter when computing projections is', maxiter_const, 'This number must be at least 500, and can be increased if you receive a warning to that end.')
 with open(log_file, "a") as file:
-    file.write('\nThe maxiter parameter when computing projections is ' + str(maxiter_const) + ' Increase it if you receive a warning to that end.')
-print('The gtol parameter when computing projections is', gtol_const, 'You may lower it but not below 1e-13 to increase the maximal achievable level of precision.')
+    file.write('\nThe maxiter parameter when computing projections is ' + str(maxiter_const) + ' This number must be at least 500, and can be increased if you receive a warning to that end.')
+print('The gtol parameter when computing projections is', gtol_const, 'You may lower it but not below 1e-13 to increase the maximal achievable level of precision. You may increase it but not above 1e-11 for faster computation and increased stability.')
 with open(log_file, "a") as file:
-    file.write('\nThe gtol parameter when computing projections is ' + str(gtol_const) + ' You may lower it but not below 1e-13 to increase the maximal achievable level of precision.\n')
+    file.write('\nThe gtol parameter when computing projections is ' + str(gtol_const) + ' You may lower it but not below 1e-13 to increase the maximal achievable level of precision. You may increase it but not above 1e-11 for faster computation and increased stability.\n')
 # Reading the Input File For Setting Up Variables, Number of Studies, Sample Sizes and Constants
 
 # Setting Up Number of Variables and Number of Studies
@@ -146,7 +176,7 @@ if variables > max_variables:
         file.write('\n\nWarning: Too many variables. The program will terminate. We do not support over ' + str(max_variables) + ' variables.')
     sys.exit()
 # Check that no keywords are listed as variables
-keywords = {"OR", "NOT", "NEG", "SIZE", "SAMPLE", "MAXITER", "STOPPING", "GTOL"}
+keywords = {"OR", "NOT", "NEG", "SIZE", "SAMPLE", "MAXITER", "STOPPING", "GTOL", "BIAS"}
 upper_vars = {v.upper() for v in variable}
 if keywords.intersection(upper_vars):
     print("Warning: Keywords used as variables. The program will terminate. Please do not use keywords as variables.")
@@ -156,9 +186,9 @@ if keywords.intersection(upper_vars):
     sys.exit()
 studies = study  # number of studies
 if studies != len(sample_sizes):
-    print("Warning: The number of sample sizes does not match the number of studies. Make sure to include one sample size after the word study.")
+    print("Warning: The number of sample sizes does not match the number of studies. The program will terminate. Make sure to include one sample size after the word study.")
     with open(output_file, "a") as file:
-        file.write('\n\nWarning: The number of sample sizes does not match the number of studies. Make sure to include one sample size after the word study.')
+        file.write('\n\nWarning: The number of sample sizes does not match the number of studies. The program will terminate. Make sure to include one sample size after the word study.')
     sys.exit()
 print('The', len(variable), 'variables observed in', studies, 'studies are', variable)
 with open(output_file, "a") as file:
@@ -311,9 +341,9 @@ for line in lines:
                 try:
                     C = float(matching.group(1).replace(',',''))/float(matching.group(2).replace(',',''))
                 except ValueError:
-                    print('A numerical error in a constraint. The constraint is ignored.')
+                    print('Warning: A numerical error in a constraint. The constraint is ignored.')
                     with open(output_file, "a") as file:
-                        file.write('\nA numerical error in a constraint. The constraint is ignored.')
+                        file.write('\nWarning: A numerical error in a constraint. The constraint is ignored.')
                         continue
         else:
             matching = re.search(r'([\d.]+)', line)
@@ -321,17 +351,17 @@ for line in lines:
                 try:
                     C = float(matching.group())
                 except ValueError:
-                    print('A numerical error in a constraint. The constraint is ignored.')
+                    print('Warning: A numerical error in a constraint. The constraint is ignored.')
                     with open(output_file, "a") as file:
-                        file.write('\nA numerical error in a constraint. The constraint is ignored.')
+                        file.write('\nWarning: A numerical error in a constraint. The constraint is ignored.')
                         continue
         match = re.search(conditional_pattern, line, flags=re.IGNORECASE)
         if match:  # here we deal with a conditional constraint
             parts = re.split(conditional_pattern, line)
             if len(parts) > 2:
-                print('Too many conditional symbols | in a constraint. The constraint is ignored.')
+                print('Warning: Too many conditional symbols | in a constraint. The constraint is ignored.')
                 with open(output_file, "a") as file:
-                    file.write('\nToo many conditional symbols | in a constraint. The constraint is ignored.')
+                    file.write('\nWarning: Too many conditional symbols | in a constraint. The constraint is ignored.')
             else:
                 upper, conditional = parts
                 upper = upper + ' ' + conditional  # upper & conditional is true upper pattern
@@ -342,6 +372,10 @@ for line in lines:
                     with open(output_file, "a") as file:
                         file.write('\nP( ' + display_constraint(YUP, NUP) + ' | ' + display_constraint(Y, N) + ' ) = ' + str(C))
                     constraints_data[study].append((condit_conjunction(YUP, NUP, Y, N, C), 0.0))
+                else:
+                    print('Warning: Empty condition in a constraint. The constraint is ignored.')
+                    with open(output_file, "a") as file:
+                        file.write('\nWarning: Empty condition in a constraint. The constraint is ignored.')
         else:
             match = re.search(or_pattern, line, flags=re.IGNORECASE)
             if match:  # here we deal with disjunctive constraints
@@ -396,6 +430,7 @@ for line in lines:
 # We need to change constraints data to a different form for optimisation
 constraints = []  # to save all lists of constraints in a required form
 redundancy = False  # redundancy flag
+full_rank = False  # full_rank flag
 for i in range(studies):
     A = np.vstack([a for (a, c) in constraints_data[i]])  # rows of A are the vectors
     c = np.array([c for (a, c) in constraints_data[i]])   # RHS values
@@ -420,6 +455,9 @@ for i in range(studies):
             with open(output_file, "a") as file:
                 file.write(f' The program will terminate.')
             sys.exit()  # program will terminate so users would not ignore this
+    if rank_A == dimensions:
+        full_rank = True
+    #print(rank_A, dimensions, full_rank)
     #proj = np.linalg.lstsq(A, c, rcond=None)[0]
     #residual = np.linalg.norm(A @ proj - c)
     #if residual > 1e-8:
@@ -513,9 +551,9 @@ for i in range(0, cycles):  # first we iterate it for the minimal number of cycl
     with open(log_file, "a") as file:
         file.write('\nIteration ' + str(i) + ': [' + ', '.join(f"{x:.5f}" for x in para) + '] Divergence: ' + str(distance) + ' Difference: ' + str(previous_distance - distance) + ' < ' + str(stopping) + ' = stopping')
     if (previous_distance - distance) < 0:   # we can get increasing distance if we have reached the programmed projection accuracy level
-        print("Warning: Increasing distance. This could indicate a problem (resolve any warnings), or we may have reached the maximal achievable level of precision.")  # means a serious problem or gtol accuracy limit was reached
-        with open(output_file, "a") as file:
-            file.write("\n\nWarning: Increasing distance. This could indicate a problem (resolve any warnings), or we may have reached the maximal achievable level of precision.")
+        print("Warning: Increasing divergence. This could indicate that we may have reached the maximal achievable level of precision. You may lower the default gtol to 1e-13 to increase the maximal achievable level of precision. Type gtol = 1e-13 in the", input_file, "after keyword STUDY.")
+        with open(log_file, "a") as file:
+            file.write("\n\nWarning: Increasing divergence. This could indicate that we may have reached the maximal achievable level of precision. You may lower the default gtol to 1e-13 to increase the maximal achievable level of precision. Type gtol = 1e-13 in the " + input_file + " after keyword STUDY.")
 counter = cycles
 while (previous_distance - distance) > stopping:  # then we iterate it until we fall below the stopping condition
     para = pooled.copy()  # define new starting point para for projection
@@ -538,15 +576,14 @@ while (previous_distance - distance) > stopping:  # then we iterate it until we 
         file.write('\nIteration ' + str(counter) + ': [' + ', '.join(f"{x:.5f}" for x in para) + '] Divergence: ' + str(distance) + ' Difference: ' + str(previous_distance - distance) + ' < ' + str(stopping) + ' = stopping')
     counter = counter + 1
     if (previous_distance - distance) < 0:  # we can get increasing distance if we have reached the programmed projection accuracy level
-        print(
-            "Warning: Increasing distance. This could indicate a problem (resolve any warnings), or we may have reached the maximal achievable level of precision.")  # means a serious problem or gtol accuracy limit was reached
-        with open(output_file, "a") as file:
-            file.write("\n\nWarning: Increasing distance. This could indicate a problem (resolve any warnings), or we may have reached the maximal achievable level of precision.")
-            break
+        print("Warning: Increasing divergence. This could indicate that we may have reached the maximal achievable level of precision. You may lower the default gtol to 1e-13 to increase the maximal achievable level of precision. Type gtol = 1e-13 in the",input_file, "after keyword STUDY.")
+        with open(log_file, "a") as file:
+            file.write("\n\nWarning: Increasing divergence. This could indicate that we may have reached the maximal achievable level of precision. You may lower the default gtol to 1e-13 to increase the maximal achievable level of precision. Type gtol = 1e-13 in the " + input_file + " after keyword STUDY.")
+        break
 if maxiter_flag:  # if we have exceeded maxiter in any projection
-    print("Warning: You may need to increase maxiter to ensure correctness of projections. Type maxiter = 2000 anywhere after STUDY in the input file.")
-    with open(output_file, "a") as file:
-        file.write("\n\nWarning: You may need to increase maxiter to ensure correctness of projections. Type maxiter = 2000 anywhere after STUDY in the input file.")
+    print("Warning: You may need to increase maxiter to ensure correctness of projections. Type maxiter = 2000 anywhere after keyword STUDY in", input_file)
+    with open(log_file, "a") as file:
+        file.write("\n\nWarning: You may need to increase maxiter to ensure correctness of projections. Type maxiter = 2000 anywhere after keyword STUDY in " + input_file)
 # The convergence procedure iterates projections with weighted arithmetic pooling
 
 # Individual non-weighted KL-divergences from the resulting distribution to studies are stored here
@@ -567,8 +604,38 @@ with open(output_file, "a") as file:
     file.write('The resulting distribution after ' + str(counter) + ' iterations is [' + ', '.join(f"{x:.4f}" for x in para) + ']\n')
     file.write('The sum of weighted KL-divergences of this distribution to sets of probability functions given by individual studies is: ' + str(distance) + '\n')
     file.write('This sum is what is being minimised. The last improvement to this sum was by '+ str(previous_distance - distance) + ' < ' + str(stopping) + ' = stopping\n')
+
 with open(log_file, "a") as file:
-    file.write('\n\nIndividual non-weighted KL-divergences from the resulting distribution [' + ', '.join(f"{x:.4f}" for x in para) + '] to studies are respectively ' + ', '.join(values) + ', where smaller values indicate smaller divergences. This could be used to judge the degree to which the individual studies disagree with the resulting distribution, and as a basis of reliability analysis.\n\n')
+    file.write('\n')
+
+if studies == 1:
+    if full_rank:  # if at least one study's constraint determine a single probability distribution then there is only one optinal solution
+        with open(log_file, "a") as file:
+            file.write('\nThere is only one optimal solution.\n')
+    else:
+        if bias == 0:  # with no bias and one study we get maxent
+            with open(log_file, "a") as file:
+                file.write(
+                    '\nThe resulting distribution is the most entropic point among the distributions consistent with the single given study.\n')
+        else:   # or we can go to CM infinity
+            with open(log_file, "a") as file:
+                file.write(
+                    '\nThe resulting distribution would approach the central mass at infinity distribution among the distributions consistent with the single given study, as the bias set to ' + str(
+                        bias) + ' approaches (but is not equal to) 0.\n')
+else:
+    if full_rank:  # if at least one study's constraint determine a single probability distribution then there is only one optinal solution
+        with open(log_file, "a") as file:
+            file.write('\nThere is only one optimal solution.\n')
+    else:
+        if bias == 0:
+            with open(log_file, "a") as file:
+                file.write('\nIt is unclear which exact point we have approached if there are more optimal solutions. This can be addressed by adding a small bias such as 1/1,000. Write bias = 1/1,000 in the ' + input_file + ' after the keyword STUDY.\n')
+        else:
+            with open(log_file, "a") as file:
+                file.write('\nThe resulting distribution would approach the central mass at infinite language distribution among optimal solutions, as the bias set to ' + str(bias) + ' approaches (but is not equal to) 0.\n')
+
+with open(log_file, "a") as file:
+    file.write('\nIndividual non-weighted KL-divergences from the resulting distribution [' + ', '.join(f"{x:.4f}" for x in para) + '] to studies are respectively ' + ', '.join(values) + ', where smaller values indicate smaller divergences. This could be used to judge the degree to which the individual studies disagree with the resulting distribution, and as a basis of reliability analysis.\n\n')
 
 with open(output_file, "a") as file:
     file.write('\nAssuming that all available evidence was provided, '
