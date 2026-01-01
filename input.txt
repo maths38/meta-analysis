@@ -30,6 +30,7 @@ StudyB        # You can add a letter or a number or a word to your keyword, but 
 
 sample = 100  # You can add commas to sample size to denote thousands or not. For example, both SAMPLE = 1,250 and SAMPLE = 1250 are fine. 
 
+
 P(TEST)   = 50/100   # Instead of a fraction we could write P(TEST) = 0.5, or even TEST 0.5 as other symbols than variables, numbers and operators are ignored. 
 P(CANCER | TEST) = 20/50   # This is a conditional type of constraint recognised by key-symbol |. A disjunction cannot appear in conditional constraints.    
 
@@ -43,5 +44,6 @@ P(CANCER | TEST) = 20/50   # This is a conditional type of constraint recognised
 
 
 # Check if your input was interpreted correctly in the output file.
+
 
 
