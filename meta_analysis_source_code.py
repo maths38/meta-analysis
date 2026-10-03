@@ -555,7 +555,7 @@ for i in range(0, cycles):  # first we iterate it for the minimal number of cycl
         distance = distance + function(pool[j])*weights[j]
     print(f'Iteration {i}:', para, 'Divergence:', distance, 'Difference:', previous_distance - distance)
     with open(log_file, "a") as file:
-        file.write('\nIteration ' + str(i) + ': [' + ', '.join(f"{x:.5f}" for x in para) + '] Divergence: ' + str(distance) + ' Difference: ' + str(previous_distance - distance) + ' < ' + str(stopping) + ' = stopping')
+        file.write('\nIteration ' + str(i) + ': [' + ', '.join(f"{x:.7f}" for x in para) + '] Divergence: ' + str(distance) + ' Difference: ' + str(previous_distance - distance) + ' < ' + str(stopping) + ' = stopping')
     if (previous_distance - distance) < 0:   # we can get increasing distance if we have reached the programmed projection accuracy level
         print("Warning: Increasing divergence. This could indicate that we may have reached the maximal achievable level of precision. You may lower the default gtol to 1e-13 to increase the maximal achievable level of precision. Type gtol = 1e-13 in the", input_file, "after keyword STUDY.")
         with open(log_file, "a") as file:
@@ -579,7 +579,7 @@ while (previous_distance - distance) > stopping:  # then we iterate it until we 
         distance = distance + function(pool[j]) * weights[j]
     print(f'Iteration {counter}:', para, 'Divergence:', distance, 'Difference:', previous_distance - distance, '<', stopping, '= stopping')
     with open(log_file, "a") as file:
-        file.write('\nIteration ' + str(counter) + ': [' + ', '.join(f"{x:.5f}" for x in para) + '] Divergence: ' + str(distance) + ' Difference: ' + str(previous_distance - distance) + ' < ' + str(stopping) + ' = stopping')
+        file.write('\nIteration ' + str(counter) + ': [' + ', '.join(f"{x:.7f}" for x in para) + '] Divergence: ' + str(distance) + ' Difference: ' + str(previous_distance - distance) + ' < ' + str(stopping) + ' = stopping')
     counter = counter + 1
     if (previous_distance - distance) < 0:  # we can get increasing distance if we have reached the programmed projection accuracy level
         print("Warning: Increasing divergence. This could indicate that we may have reached the maximal achievable level of precision. You may lower the default gtol to 1e-13 to increase the maximal achievable level of precision. Type gtol = 1e-13 in the",input_file, "after keyword STUDY.")
@@ -607,7 +607,7 @@ print('This sum is what is being minimised. The last improvement to this sum was
 print("Individual non-weighted KL-divergences from the resulting distribution to studies are respectively " + ", ".join(values) + ", where smaller values indicate smaller divergences. This could be used to judge the degree to which the individual studies disagree with the resulting distribution, and as a basis of reliability analysis.")
 
 with open(output_file, "a") as file:
-    file.write('The resulting distribution after ' + str(counter) + ' iterations is [' + ', '.join(f"{x:.4f}" for x in para) + ']\n')
+    file.write('The resulting distribution after ' + str(counter) + ' iterations is [' + ', '.join(f"{x:.7f}" for x in para) + ']\n')
     file.write('The sum of weighted KL-divergences of this distribution to sets of probability functions given by individual studies is: ' + str(distance) + '\n')
     file.write('This sum is what is being minimised. The last improvement to this sum was by '+ str(previous_distance - distance) + ' < ' + str(stopping) + ' = stopping\n')
 
@@ -641,7 +641,7 @@ else:
                 file.write('\nThe resulting distribution would approach the central mass at infinite language distribution among optimal solutions, as the bias set to ' + str(bias) + ' approaches (but is not equal to) 0.\n')
 
 with open(log_file, "a") as file:
-    file.write('\nIndividual non-weighted KL-divergences from the resulting distribution [' + ', '.join(f"{x:.4f}" for x in para) + '] to studies are respectively ' + ', '.join(values) + ', where smaller values indicate smaller divergences. This could be used to judge the degree to which the individual studies disagree with the resulting distribution, and as a basis of reliability analysis.\n\n')
+    file.write('\nIndividual non-weighted KL-divergences from the resulting distribution [' + ', '.join(f"{x:.7f}" for x in para) + '] to studies are respectively ' + ', '.join(values) + ', where smaller values indicate smaller divergences. This could be used to judge the degree to which the individual studies disagree with the resulting distribution, and as a basis of reliability analysis.\n\n')
 
 with open(output_file, "a") as file:
     file.write('\nAssuming that all available evidence was provided, '
@@ -657,7 +657,7 @@ with open(output_file, "a") as file:
                     ("NOT " if i in N else "") + variable[i] for i in combo
                 )
                 probability = np.sum(conjunction(Y, N) * para)
-                file.write(f"\nP( {labels} ) = {probability:.4f}")
+                file.write(f"\nP( {labels} ) = {probability:.7f}")
 
 with open(output_file, "a") as file:
     file.write('\n\nTo find the probability of a disjunction use the above with P( X OR Y ) = P( X ) + P( Y ) - P( X & Y ).')
